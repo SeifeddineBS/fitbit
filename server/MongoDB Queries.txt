@@ -1,0 +1,27 @@
+db.accelerations.drop()
+db.createCollection(
+    "accelerations",
+    {
+		timeseries: {
+		  timeField: "timestamp",
+		  metaField: "metadata",
+		  granularity: "minutes"
+		}
+    }
+)
+
+
+\\----------------------------------------
+
+db.accelerations.insertMany( [
+{"metadata": {
+    "id_patient":"pat123",
+    "time":"minutess",
+    "row_data": "donneess",
+    "status":"PENDING",
+    "frequency":"150",
+    "number_of_steps" : "170"
+    }, 
+"timestamp": ISODate("2021-05-18T04:00:00.000Z")
+}
+])
