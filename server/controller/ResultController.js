@@ -36,19 +36,27 @@ exports.create = async (req, res) => {
 
 exports.find = async (req, res) => {
   const id = req.params.id;
-
-  const results = await Result.find({ uid_patient: id });
-  if (!results) res.status(404).send("Results  not found ");
-  const resultsReturn = [];
-  const startDate = new Date(req.body.startDate);
-  const finalDate = new Date(req.body.finalDate);
-
-  results.forEach((result) => {
-    if (result.timestamp > startDate && result.timestamp < finalDate)
-      resultsReturn.push(result);
-  });
-  if (resultsReturn.length != 0) res.status(200).send(resultsReturn);
-  else res.status(404).send("Results not found between two dates");
+  Result.find({ uid_patient: id })
+    .then((data) => {
+      if (!data) {
+        res.status(404).send("Results  not found ");
+      } else {
+        const resultsReturn = [];
+        const startDate = new Date(req.body.startDate);
+        const finalDate = new Date(req.body.finalDate);
+        data.forEach((result) => {
+          if (result.timestamp > startDate && result.timestamp < finalDate)
+            resultsReturn.push(result);
+        });
+        if (resultsReturn.length != 0) res.status(200).send(resultsReturn);
+        else res.status(404).send("Results not found between two dates");
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Could not find Result with Patient id=" + id,
+      });
+    });
 };
 
 exports.update = async (req, res) => {
